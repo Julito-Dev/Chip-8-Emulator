@@ -30,7 +30,21 @@ class CPU:
         low_byte = self.ram.read(self.pc + 1)
         instruction = (high_byte << 8) | low_byte
         return instruction        
+    
+    def decode(self):
+        instruction = self.fetch()
         
+        first_nibble = (instruction & 0xF000) >> 12
+        x = (instruction & 0x0F00) >> 8
+        y = (instruction & 0x00F0) >> 4
+        n = instruction & 0x000F
+        nn = instruction & 0x00FF
+        nnn = instruction & 0x0FFF
+        
+        return first_nibble, x, y, n, nn, nnn
+    
+
+    
         
         
     
