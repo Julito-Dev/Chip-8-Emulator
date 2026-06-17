@@ -25,9 +25,11 @@ class CPU:
         self.delay = 0
         self.sounder = 0
         
-        
-        
-        
+    def fetch(self):
+        high_byte = self.ram.read(self.pc)
+        low_byte = self.ram.read(self.pc + 1)
+        instruction = (high_byte << 8) | low_byte
+        return instruction        
         
         
         
