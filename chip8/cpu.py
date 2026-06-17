@@ -31,9 +31,7 @@ class CPU:
         instruction = (high_byte << 8) | low_byte
         return instruction        
     
-    def decode(self):
-        instruction = self.fetch()
-        
+    def decode(self, instruction):
         first_nibble = (instruction & 0xF000) >> 12
         x = (instruction & 0x0F00) >> 8
         y = (instruction & 0x00F0) >> 4
