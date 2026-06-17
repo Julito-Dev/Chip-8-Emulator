@@ -41,6 +41,48 @@ class CPU:
         
         return first_nibble, x, y, n, nn, nnn
     
+    
+    def execute_instruction(self, first_nibble, x, y, n, nn, nnn):
+        
+        if first_nibble == 0x0:
+            if nn == 0xE0:
+                self.op_00E0_clear_screen()
+            elif nn == 0xEE:
+                self.op_00EE_return()
+                
+        elif first_nibble == 0x1:
+            self.op_1NNN_jump(nnn)
+            
+        elif first_nibble == 0x2:
+            self.op_2NNN_call(nnn)
+        
+                
+    # -----PLACEHOLDERS -----
+    
+    def op_00E0_clear_screen(self):
+        print("Clear Screen called correctly")
+        
+    
+    
+    # -----FINALS------
+    
+    def op_00EE_return(self):
+        self.stack_pointer -= 1
+        self.pc = self.stack[self.stack_pointer]
+    
+    def op_1NNN_jump(self, nnn):
+        self.pc = nnn   #Moves the PC to nnn
+        
+    def op_2NNN_call(self, nnn):
+        self.stack[self.stack_pointer] = self.pc
+        self.stack_pointer += 1
+        self.pc = nnn
+        
+    
+        
+         
+        
+    
 
     
         
