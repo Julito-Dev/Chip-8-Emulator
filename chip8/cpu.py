@@ -55,6 +55,26 @@ class CPU:
             
         elif first_nibble == 0x2:
             self.op_2NNN_call(nnn)
+            
+        elif first_nibble == 0x3:
+            self.op_3XNN_cond_jump(x, nn)
+            
+        elif first_nibble == 0x4:
+            self.op_4XNN_cond_jump(x, nn)
+        
+        elif first_nibble == 0x5:
+            self.op_5XNN_cond_jump(x, y)
+        
+        elif first_nibble == 0x6:
+            self.op_6XNN_set(x, nn)
+        
+        elif first_nibble == 0x7:
+            self.op_7XNN_setsum(x, nn)
+                    
+        elif first_nibble == 0x9:
+            self.op_9XNN_cond_jump(x, y)
+        
+        
         
                 
     # -----PLACEHOLDERS -----
@@ -77,7 +97,33 @@ class CPU:
         self.stack[self.stack_pointer] = self.pc
         self.stack_pointer += 1
         self.pc = nnn
+    
+    def op_3XNN_cond_jump(self, x, nn):
+        if self.v_registers[x] == nn:
+            self.pc += 2
+            
+    def op_4XNN_cond_jump(self, x, nn):
+        if self.v_registers[x] != nn:
+            self.pc += 2
         
+    def op_5XNN_cond_jump(self, x, y):
+        if self.v_registers[x] == self.v_registers[y]:
+            self.pc += 2
+    
+    def op_6XNN_set(self, x, nn):
+        self.v_registers[x] = nn
+    
+    def op_7XNN_setsum(self, x, nn):
+        self.v_registers[x] = (self.v_registers[x] + nn) & 0xFF   #Prevents overflow
+            
+    def op_9XNN_cond_jump(self, x, y):
+        if self.v_registers[x] != self.v_registers[y]:
+            self.pc += 2
+            
+            
+    
+            
+    
     
         
          
