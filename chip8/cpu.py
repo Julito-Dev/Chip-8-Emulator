@@ -70,6 +70,9 @@ class CPU:
         
         elif first_nibble == 0x7:
             self.op_7XNN_setsum(x, nn)
+        
+        elif first_nibble == 0x8:
+            self.op_8XYN(x, y, n)
                     
         elif first_nibble == 0x9:
             self.op_9XNN_cond_jump(x, y)
@@ -115,22 +118,81 @@ class CPU:
     
     def op_7XNN_setsum(self, x, nn):
         self.v_registers[x] = (self.v_registers[x] + nn) & 0xFF   #Prevents overflow
+    
+    def op_8XYN(self, x, y, n):
+        if n == 0x0:
+            self.op_8XY0(x,y)
+            
+        elif n == 0x1:
+            self.op_8XY1(x, y)
+        
+        elif n == 0x2:
+            self.op_8XY2(x, y)
+        
+        elif n == 0x3:
+            self.op_8XY3(x, y)
+        
+        elif n == 0x4:
+            self.op_8XY4(x, y)
+        
+        elif n == 0x5:
+            self.op_8XY5(x, y)
+        
+        elif n == 0x6:
+            self.op_8XY6(x, y)
+        
+        elif n == 0x7:
+            self.op_8XY7(x, y)
+        
+        elif n == 0xE:
+            self.op_8XYE(x, y)
+            
             
     def op_9XNN_cond_jump(self, x, y):
         if self.v_registers[x] != self.v_registers[y]:
             self.pc += 2
-            
-            
     
-            
+          
+    # Family of 0x8 opcodes
     
+    def op_8XY0(self, x, y):
+        self.v_registers[x] = self.v_registers[y]    
     
+    def op_8XY1(self, x, y):
+        self.v_registers[x] = self.v_registers[x] | self.v_registers[y]
+    
+    def op_8XY2(self, x, y):
+        self.v_registers[x] = self.v_registers[x] & self.v_registers[y]
+    
+    def op_8XY3(self, x, y):
+        self.v_registers[x] = self.v_registers[x] ^ self.v_registers[y]
+    
+    def op_8XY4(self, x, y):
+        result = self.v_registers[x] + self.v_registers[y]
+        flag = 1 if result > 0xFF else 0
+        self.v_registers[x] = result & 0xFF
+        self.v_registers[0xF] = flag
+    
+    def op_8XY5(self, x, y):
+        result = self.v_registers[x] - self.v_registers[y]
+        flag = 1 if self.v_registers[x] >= self.v_registers[y] else 0
+        self.v_registers[x] = result & 0xFF
+        self.v_registers[0xF] = flag
+    
+    def op_8XY6(self, x, y):
+        flag =  self.v_registers[y] & 0x1
+        self.v_registers[x] = self.v_registers[y] >> 1
+        self.v_registers[0xF] = flag
         
-         
-        
+    def op_8XY7(self, x, y):
+        result = self.v_registers[y] - self.v_registers[x]
+        flag = 1 if self.v_registers[y] >= self.v_registers[x] else 0
+        self.v_registers[x] = result & 0xFF
+        self.v_registers[0xF] = flag
     
-
-    
-        
+    def op_8XYE(self, x, y):
+        flag = (self.v_registers[y] & 0x80) >> 7
+        self.v_registers[x] = (self.v_registers[y] << 1) & 0xFF
+        self.v_registers[0xF] = flag
         
     
