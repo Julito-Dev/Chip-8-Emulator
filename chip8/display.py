@@ -16,7 +16,7 @@ class display:
         self.pixels = [0] * (WIDTH* HEIGHT)
     
     def draw(self, x, y, value):
-        index = y * WIDTH * x
+        index = y * WIDTH + x
         collision = self.pixels[index] & value
         self.pixels[index] ^= value
         return collision == 1
@@ -26,7 +26,7 @@ class display:
         for i, pixel in enumerate(self.pixels):
             if pixel:
                 x = (i % WIDTH) * SCALE
-                y = (i % HEIGHT) * SCALE
+                y = (i // HEIGHT) * SCALE
                 pygame.draw.rect(self.screen, (255,255,255), x, y, SCALE, SCALE)
                 
         pygame.display.flip()
