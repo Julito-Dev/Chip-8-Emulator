@@ -1,9 +1,10 @@
 import random
 
 class CPU:
-    def __init__(self, ram, display):
+    def __init__(self, ram, display, keyboard):
         self.ram = ram
         self.display = display
+        self.keyboard = keyboard
         
         #GENERAL REGISTERS
         self.v_registers = [0] * 16
@@ -223,10 +224,14 @@ class CPU:
     
     #Family of 0xE opcodes
     def op_Ex9E(self, x):
-        pass
-
+        key = self.v_registers[x]
+        if self.keyboard.is_pressed(key):
+            self.pc += 2
+            
     def op_ExA1(self, x):
-        pass
+        key = self.v_registers[x]
+        if not self.keyboard.is_pressed(key):
+            self.pc += 2
     
     #Family of 0xF opcodes
     
@@ -234,7 +239,10 @@ class CPU:
         self.v_registers[x] = self.delay
     
     def op_FX0A(self, x):
-        pass
+        key = self.keyboard.wait_for_key()
+        if key is not None:
+            self.v_registers[x] = key
+
     
     def op_FX15(self, x):
         self.delay = self.v_registers[x]
