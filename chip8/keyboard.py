@@ -18,3 +18,36 @@ KEYMAP = {
     0xE: pygame.K_f,
     0xF: pygame.K_v
 }
+
+class keyboard:
+    def __init__(self):
+        self.current_key = None
+        
+    def is_pressed(self, key):
+        keys = pygame.key.get_pressed()
+        if key in KEYMAP:
+            return keys[KEYMAP[key]] ==1
+        return False
+    
+    def wait_for_key(self):
+        """Blocks the CPU until a keys is pushed
+        """
+        waiting =True
+        self.current_key = None
+        
+        while self.wait_for_key:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return None
+
+                if event.type == pygame.KEYDOWN:
+                    for chip_key, pygame_key in KEYMAP.items():
+                        if event.key == pygame_key:
+                            self.current_key = chip_key
+                            waiting = False
+                            return chip_key
+            pygame.time.delay(10)
+        
+        return self.current_key
+    
