@@ -1,3 +1,5 @@
+import random
+
 class CPU:
     def __init__(self, ram):
         self.ram = ram
@@ -77,6 +79,53 @@ class CPU:
         elif first_nibble == 0x9:
             self.op_9XNN_cond_jump(x, y)
         
+        elif first_nibble == 0xA:
+            self.op_ANNN(nnn)
+        
+        elif first_nibble == 0xB:
+            self.op_BNNN(nnn)
+            
+        elif first_nibble == 0xC:
+            self.op_CXNN(x, nn)
+        
+        elif first_nibble == 0xD:
+            self.op_DXYN(x, y, n)
+        
+        elif first_nibble == 0xE:
+            if nn == 0x9E:
+                self.op_Ex9E(x)
+            
+            elif nn == 0xA1:
+                self.op_ExA1(x)
+    
+        elif first_nibble == 0xF:
+            if nn == 0x07:
+                self.op_FX07(x)
+                
+            elif nn == 0x0A:
+                self.op_FX0A(x)
+                
+            elif nn == 0x15:
+                self.op_FX15(x)
+                
+            elif nn == 0x18:
+                self.op_FX18(x)
+                
+            elif nn == 0x1E:
+                self.op_FX1E(x)
+                
+            elif nn == 0x29:
+                self.op_FX29(x)
+                
+            elif nn == 0x33:
+                self.op_FX33(x)
+            elif nn == 0x55:
+                self.op_FX55(x)
+                
+            elif nn == 0x65:
+                self.op_FX65(x)
+                
+                
         
         
                 
@@ -151,8 +200,62 @@ class CPU:
     def op_9XNN_cond_jump(self, x, y):
         if self.v_registers[x] != self.v_registers[y]:
             self.pc += 2
+        
+    def op_ANNN(self, nnn):
+        self.i = nnn
     
-          
+    def op_BNNN(self, nnn):
+        self.pc = nnn + self.v_registers[0x0]
+        
+    def op_CXNN(self,x, nn):
+        self.v_registers[x] = random.randint(0, 255) & nn
+    
+    def op_DXYN(self, x, y, nibble):
+        print("Display goes here")
+        
+    
+    #Family of 0xE opcodes
+    def op_Ex9E(self, x):
+        pass
+
+    def op_ExA1(self, x):
+        pass
+    
+    #Famili of 0xF opcodes
+    
+    def op_FX07(self, x):
+        self.v_registers[x] = self.delay
+    
+    def op_FX0A(self, x):
+        pass
+    
+    def op_FX15(self, x):
+        self.delay = self.v_registers[x]
+    
+    def op_FX18(self, x):
+        self.sounder = self.v_registers[x]
+    
+    def op_FX1E(self, x):
+        self.i = (self.i + self.v_registers[x]) & 0xFFFF
+        
+    def op_FX29(self, x):
+        self.i = self.v_registers[x] * 5
+
+    def op_FX33(self, x):
+        value = self.v_registers[x]
+        self.ram.write(self.i, value // 100)
+        self.ram.write(self.i + 1, (value//10) %  10)
+        self.ram.write(self.i + 2, value % 10)
+    
+    def op_FX55(self, x):
+        for i in range(x + 1):
+            self.ram.write(self.i + i, self.v_registers[i])
+            
+    def op_FX65(self, x):
+        for i in range(x + 1):
+            self.v_registers[i] = self.ram.read(self.i + i)
+    
+    
     # Family of 0x8 opcodes
     
     def op_8XY0(self, x, y):
