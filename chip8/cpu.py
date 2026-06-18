@@ -128,17 +128,9 @@ class CPU:
                 
                 
         
-        
-                
-    # -----PLACEHOLDERS -----
-    
     def op_00E0_clear_screen(self):
-        print("Clear Screen called correctly")
+        self.display.clear()
         
-    
-    
-    # -----FINALS------
-    
     def op_00EE_return(self):
         self.stack_pointer -= 1
         self.pc = self.stack[self.stack_pointer]
@@ -212,7 +204,21 @@ class CPU:
         self.v_registers[x] = random.randint(0, 255) & nn
     
     def op_DXYN(self, x, y, nibble):
-        print("Display goes here")
+        x_pos = self.v_registers[x] % 64
+        y_pos = self.v_registers[y] %32
+        self.v_registers[0xF] = 0
+        
+        for row in range(nibble):
+            byte = self.ram.read(self.i +row)
+            for bit in range (8):
+                pixel = (byte >> ( 7 -  bit)) & 1
+                if pixel:
+                    px = (x_pos + bit) %64
+                    py = (y_pos + row) % 32
+                    collision = self.display.draw(px, py, 1)
+                    if collision:
+                        self.v_registers[0xF] = 1
+        
         
     
     #Family of 0xE opcodes
@@ -222,7 +228,7 @@ class CPU:
     def op_ExA1(self, x):
         pass
     
-    #Famili of 0xF opcodes
+    #Family of 0xF opcodes
     
     def op_FX07(self, x):
         self.v_registers[x] = self.delay
