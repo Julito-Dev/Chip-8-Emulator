@@ -1,8 +1,9 @@
 import random
 
 class CPU:
-    def __init__(self, ram):
+    def __init__(self, ram, display):
         self.ram = ram
+        self.display = display
         
         #GENERAL REGISTERS
         self.v_registers = [0] * 16
