@@ -65,7 +65,7 @@ python main.py roms/Pong.ch8
 
 Note: ROMs must be downloaded separately from the internet. This repository does not include any ROM files.
 
-If no ROM is specified, the program prints usage instructions and exits:
+If no ROM is specified, the program closes automaticly
 
 ```bash
 python main.py
