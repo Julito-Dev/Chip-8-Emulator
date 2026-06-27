@@ -3,6 +3,8 @@ from chip8.memory import memory
 from chip8.cpu import CPU
 from chip8.display import display
 from chip8.keyboard import keyboard
+import tkinter as tk
+from tkinter import filedialog
 
 FONTSET = [
     0xF0, 0x90, 0x90, 0x90, 0xF0,  # 0
@@ -24,6 +26,17 @@ FONTSET = [
 ]
 
 MAX_ROM_SIZE = 0xE00  # Avaliable space: 0x200 < x < 0xFFF
+
+def show_file_select():
+    root = tk.Tk()
+    root.withdraw()
+    path = filedialog.askopenfilename(
+        title="Select a ROM of CHIP-8",
+        filetypes=[("CHIP-8 ROM", "*.ch8"), ("All files", "*.*")]
+        
+    )
+    root.destroy()
+    return path
 
 
 def main(rom_path):
@@ -51,6 +64,9 @@ def main(rom_path):
     while running:
         running = screen.check_events()
 
+        if not running:
+            break
+        
         # ~500 Hz: ejecutar varios ciclos por frame
         for _ in range(10):
             instruction = cpu.fetch()
@@ -68,10 +84,8 @@ def main(rom_path):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage:")
-        print("1. Create a new folder in the root of the project.")
-        print("2. Download some ROMs from the web.")
-        print("3. In the terminal, run: python main.py roms/rom_name.ch8")
-        sys.exit(1)
-    main(sys.argv[1])
+    path= show_file_select()
+    if not path:
+        print("No ROM Selected.")
+        sys.exit(0)
+    main(path)
