@@ -52,10 +52,5 @@ class display:
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
                 return False
-        
         return True
-
-    
-                
