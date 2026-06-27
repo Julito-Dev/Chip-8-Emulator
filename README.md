@@ -69,10 +69,6 @@ If no ROM is specified, the program prints usage instructions and exits:
 
 ```bash
 python main.py
-# Usage:
-# 1. Create a new folder in the root of the project.
-# 2. Download some ROMs from the web.
-# 3. In the terminal, run: python main.py roms/rom_name.ch8
 ```
 
 ## Controls
